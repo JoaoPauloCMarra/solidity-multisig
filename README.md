@@ -39,16 +39,33 @@ A minimal, gas-optimized multi-signature wallet built with Foundry.
 forge install
 
 # run tests
-forge test
+make test
 
-# run with verbose output
-forge test -vvv
+# verbose output
+make test-v
 
 # gas report
-forge test --gas-report
+make gas
 ```
 
-## Deploy
+## Local Demo
+
+```bash
+# terminal 1: start local chain
+make anvil
+
+# terminal 2: deploy
+make deploy-local
+
+# run the demo flow
+make demo-submit      # propose tx
+make demo-confirm-1   # owner 1 confirms
+make demo-confirm-2   # owner 2 confirms
+make demo-execute     # execute (threshold met)
+make demo-status      # check result
+```
+
+## Deploy to Sepolia
 
 1. Copy `.env.example` to `.env` and fill in values:
 
@@ -65,8 +82,7 @@ THRESHOLD=2
 2. Deploy:
 
 ```bash
-source .env
-forge script script/Deploy.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast --verify
+make deploy-sepolia
 ```
 
 ## Usage

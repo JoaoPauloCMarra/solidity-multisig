@@ -86,13 +86,7 @@ contract MultiSigWallet {
 
     function submit(address _to, uint256 _value, bytes calldata _data) external onlyOwner returns (uint256) {
         uint256 txId = transactions.length;
-        transactions.push(Transaction({
-            to: _to,
-            value: _value,
-            data: _data,
-            executed: false,
-            confirmCount: 0
-        }));
+        transactions.push(Transaction({to: _to, value: _value, data: _data, executed: false, confirmCount: 0}));
 
         emit SubmitTransaction(msg.sender, txId, _to, _value, _data);
         return txId;
@@ -169,13 +163,12 @@ contract MultiSigWallet {
         return transactions.length;
     }
 
-    function getTransaction(uint256 _txId) external view txExists(_txId) returns (
-        address to,
-        uint256 value,
-        bytes memory data,
-        bool executed,
-        uint256 confirmCount
-    ) {
+    function getTransaction(uint256 _txId)
+        external
+        view
+        txExists(_txId)
+        returns (address to, uint256 value, bytes memory data, bool executed, uint256 confirmCount)
+    {
         Transaction storage txn = transactions[_txId];
         return (txn.to, txn.value, txn.data, txn.executed, txn.confirmCount);
     }
