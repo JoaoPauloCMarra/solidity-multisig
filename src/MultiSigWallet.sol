@@ -40,28 +40,48 @@ contract MultiSigWallet {
     mapping(uint256 => mapping(address => bool)) public isConfirmed;
 
     modifier onlyOwner() {
-        if (!isOwner[msg.sender]) revert NotOwner();
+        _checkOwner();
         _;
     }
 
     modifier onlyWallet() {
-        if (msg.sender != address(this)) revert NotOwner();
+        _checkWallet();
         _;
     }
 
     modifier txExists(uint256 _txId) {
-        if (_txId >= transactions.length) revert TxNotExists();
+        _checkTxExists(_txId);
         _;
     }
 
     modifier notExecuted(uint256 _txId) {
-        if (transactions[_txId].executed) revert TxAlreadyExecuted();
+        _checkNotExecuted(_txId);
         _;
     }
 
     modifier notConfirmed(uint256 _txId) {
-        if (isConfirmed[_txId][msg.sender]) revert TxAlreadyConfirmed();
+        _checkNotConfirmed(_txId);
         _;
+    }
+
+    function _checkOwner() internal view {
+        if (!isOwner[msg.sender]) revert NotOwner();
+    }
+
+    function _checkWallet() internal view {
+        if (msg.sender != address(this)) revert NotOwner();
+    }
+
+    function _checkTxExists(uint256 _txId) internal view {
+        if (_txId >= transactions.length) revert TxNotExists();
+    }
+
+    function _checkNotExecuted(uint256 _txId) internal view {
+        if (transactions[_txId].executed) revert TxAlreadyExecuted();
+    }
+
+    function _checkNotConfirmed(uint256 _txId) internal view {
+        if (isConfirmed[_txId][msg.sender]) revert TxAlreadyConfirmed();
     }
 
     constructor(address[] memory _owners, uint256 _threshold) {
